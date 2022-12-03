@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   SafeAreaView,
   NativeModules,
   StatusBar,
@@ -13,8 +14,15 @@ const {MyNativeModule} = NativeModules;
 
 const App = () => {
   const onPressButton = () => {
-    console.log('Este es un log desde javascript');
-    MyNativeModule.simpleLogger();
+    MyNativeModule.getAppVersion().then(version => {
+      console.log(parseFloat(version));
+      if (parseFloat(version) <= 4.0) {
+        Alert.alert(
+          'Advertencia',
+          `Version actual es ${version} y puede actualizar a 4.`,
+        );
+      }
+    });
   };
 
   return (
@@ -22,7 +30,7 @@ const App = () => {
       <StatusBar barStyle={'light-content'} />
       <View style={styles.container}>
         <Text style={styles.text}>Hello MDevConf!</Text>
-        <Button title="Click me" onPress={onPressButton} />
+        <Button title="Verificar version" onPress={onPressButton} />
       </View>
     </SafeAreaView>
   );
@@ -36,7 +44,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontWeight: '700',
-    fontSize: 20,
   },
 });
 
